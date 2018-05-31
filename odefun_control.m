@@ -1,3 +1,4 @@
+%% Geometric control design for quadrotor suspended load model
 function[dx, xLd, Rd, qd, f, M] = odefun_control(t,x,data)
 %% Constants
 mL = data.params.mL;
@@ -89,34 +90,6 @@ M = -kR/epsilon^2*err_R - kOm/epsilon*err_Om + vec_cross(Omega, J*Omega)...
 % Quadrotor Attitude
 R_dot = R*hat_map(Omega);
 Omega_dot = J\( -vec_cross(Omega, J*Omega) + M );
-
-%% Robust Analysis for offset model using old control design
-% Please comment this part before launching simulations if there is no offset from the CM of quadrotor
-% to the attachment point of cable
-u = vec_dot(f, R(:,3))/(mQ*l);
-u_para = q*(q'*u);
-u_perp = -hat(q)*(hat(q)*u);
-
-qb = R'*q;
-A11 = (mQ+mL)*eye(3);
-A12 = -mQ*q*qb'*hat(r);
-A21 = mQ*hat(r)*qb*q';
-A22 = J + mQ*(hat(r)*qb)*(hat(r)*qb)';
-A = [A11,A12;A21,A22];
-
-G1 = mQ*l*(q*q');
-G2 = mQ*l*hat(r)*qb*q';
-G = [G1;G2];
-
-d1 = -mQ*(qb'*(hat(Omega))^2*r + l*vec_dot(omega,omega))*q;
-d2 = -mQ*(qb'*(hat(Omega))^2*r + l*vec_dot(omega,omega))*(hat(r)*qb);
-d = [d1;d2];
-
-temp = A\(G*u_para+d+[zeros(3,1);M-vec_cross(Omega, J*Omega)]);
-vL_dot = temp(1:3) - g*e3;
-Omega_dot = temp(4:6);
-omega_dot = -hat(q)*u_perp+vec_cross(q,(1/l)*...
-    (vL_dot+g*e3+R*(hat(Omega)^2+hat(Omega_dot))*r));
 
 %% Output
 dx = [xL_dot; vL_dot; q_dot; omega_dot; reshape(R_dot, 9,1); Omega_dot];
