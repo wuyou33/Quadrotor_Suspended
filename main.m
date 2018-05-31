@@ -9,6 +9,7 @@ data.params.e1 = [1;0;0];
 data.params.e2 = [0;1;0];
 data.params.e3 = [0;0;1];
 data.params.l = 1;
+data.params.r = [0.05;0.05;-0.05];
 
 %% Get initial condition from the nominal trajectory
 xL = [0.5;-0.5;2.5-0.5];
