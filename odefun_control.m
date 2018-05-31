@@ -91,6 +91,8 @@ R_dot = R*hat_map(Omega);
 Omega_dot = J\( -vec_cross(Omega, J*Omega) + M );
 
 %% Robust Analysis for offset model using old control design
+% Please comment this part before launching simulations if there is no offset from the CM of quadrotor
+% to the attachment point of cable
 u = vec_dot(f, R(:,3))/(mQ*l);
 u_para = q*(q'*u);
 u_perp = -hat(q)*(hat(q)*u);
