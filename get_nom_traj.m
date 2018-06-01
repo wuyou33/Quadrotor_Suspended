@@ -2,7 +2,7 @@
 % Use differential flatness to compute various system quantities, given
 % load trajectory and higher order time deriviatives.
 function [xLd,vLd,aLd,p,dp,d2p,...
-    R,Omega,dOmega,daLd,d2aLd,d3p,dR,d2R,f,M] = get_nom_traj(params, load_traj)
+    R,omega,domega,Omega,dOmega,daLd,d2aLd,d3p,dR,d2R,f,M] = get_nom_traj(params, load_traj)
 %% Constants
 mQ = params.mQ ;
 mL = params.mL ;
@@ -46,6 +46,10 @@ d4norm_Tp = ( 2*vec_dot(d3Tp, dTp)+2*vec_dot(d2Tp, d2Tp) + vec_dot(d2Tp, d2Tp)+v
     - d3norm_Tp*dnorm_Tp) / norm_Tp ;
 d4p = ( d4Tp - d3p*dnorm_Tp-d2p*d2norm_Tp - d2p*d2norm_Tp-dp*d3norm_Tp - d2p*d2norm_Tp-dp*d3norm_Tp - dp*d3norm_Tp-p*d4norm_Tp ...
     - d3p*dnorm_Tp-d2p*d2norm_Tp - d2p*d2norm_Tp-dp*d3norm_Tp - d3p*dnorm_Tp-d2p*d2norm_Tp - d3p*dnorm_Tp ) / norm_Tp ;
+
+%% Derivatives of Load Angular Velocity
+omega = vec_cross(p,dp);
+domega = vec_cross(dp,dp)+vec_cross(p,d2p);
 
 %% Derivatives of Quadrotor's Position
 vxQ = vLd - l*dp;

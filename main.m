@@ -2,7 +2,8 @@
 close all;
 %% Parameters
 data.params.mQ = 0.5;
-data.params.mL = 0.087;
+% data.params.mL = 0.087;
+data.params.mL = 0.5;
 data.params.J = [2.32e-3,0,0;0,2.32e-3,0;0,0,4e-3];
 data.params.g = 9.81;
 data.params.e1 = [1;0;0];
@@ -28,8 +29,8 @@ end
 x_0 = [xL; vL; q; omega; reshape(R, 9,1); Omega];
 
 %% Solving Dynamical Equations
-odeopts = [];
-[t, x] = ode45(@odefun_control, [0 10], x_0, odeopts, data);
+odeopts = odeset('RelTol',1e-2,'AbsTol',1e-2);
+[t, x] = ode45(@odefun_control2, [0 30], x_0, odeopts, data);
 
 %% Compute various quantities
 
