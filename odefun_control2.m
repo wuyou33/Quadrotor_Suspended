@@ -31,8 +31,8 @@ b1 = R(:,1);
 % LOAD POSITION TRACKING
 
 % Position errors
-eL = xL - xLd;
-deL = vL - vLd;
+err_x = xL - xLd;
+err_v = vL - vLd;
 
 epsilon_bar = 0.8;
 kp_xy = 0.3/epsilon_bar^2; kd_xy = 0.6/epsilon_bar;
@@ -40,7 +40,7 @@ k1 = diag([kp_xy kp_xy 2]); k2 = diag([kd_xy kd_xy 1.5]);
 
 % PD force to track trajectory for Load with
 % feedforward
-A = (-k1*eL - k2*deL + (mQ+mL)*(aLd+g*e3) + mQ*l*vec_dot(dq,dq)*q);
+A = (-k1*err_x - k2*err_v + (mQ+mL)*(aLd+g*e3) + mQ*l*vec_dot(dq,dq)*q);
 qd = -A/norm(A);
 
 epsilon_q = 0.5;
@@ -61,7 +61,6 @@ f = vec_dot(F, R(:,3));
 
 % Load position
 xL_dot = vL;
-vL_dot = 1/(mQ+mL)*((vec_dot(q,f*b3)-mQ*l*vec_dot(dq,dq))*q-(mQ+mL)*g*e3);
 
 if(abs(norm(qd)-1) > 1e-2)
     disp('Error in pd'); keyboard;
@@ -69,7 +68,6 @@ end
 
 % Load Attitude
 q_dot = dq;
-omega_dot = 1/(mQ*l) * vec_cross(-q, f*b3);
 
 % DESIRED YAW DIRECTION
 b1d = e1;
@@ -89,7 +87,6 @@ M = -kR/epsilon^2*err_R - kOm/epsilon*err_Om + vec_cross(Omega, J*Omega)...
 
 % Quadrotor Attitude
 R_dot = R*hat_map(Omega);
-Omega_dot = J\( -vec_cross(Omega, J*Omega) + M );
 
 %% Robust Analysis for offset model using old control design
 % Please comment this part before launching simulations if there is no offset from the CM of quadrotor
@@ -119,6 +116,7 @@ Omega_dot = temp(4:6);
 omega_dot = -hat(q)*u_perp+vec_cross(q,(1/l)*...
     (vL_dot+g*e3+R*(hat(Omega)^2+hat(Omega_dot))*r));
 
+disp(err_x)
 %% Output
 dx = [xL_dot; vL_dot; q_dot; omega_dot; reshape(R_dot, 9,1); Omega_dot];
 
