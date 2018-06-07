@@ -51,7 +51,7 @@ err_q = hat_map(q)^2*qd;
 err_om = dq - vec_cross(vec_cross(qd, dqd), q);
 F_pd = -kq*err_q-kom*err_om;
 F_ff = (mQ*l)*vec_dot(q, vec_cross(qd,dqd))*vec_cross(q,dq)+...
-    (mQ*l)*vec_cross( vec_cross(qd, d2qd), q)+(1/l)*hat(q)*hat(q)*(R*hat(Omega)*hat(Omega)*r);
+    (mQ*l)*vec_cross( vec_cross(qd, d2qd), q)+mQ*hat(q)*hat(q)*(R*hat(Omega)*hat(Omega)*r);
 F_n = vec_dot(A_para,q)*q;
 F = F_pd - F_ff + F_n;
 b3c = F/norm(F);
@@ -110,32 +110,6 @@ R_dot = R*hat_map(Omega);
 Omega_dot = temp(4:6);
 omega_dot = -hat(q)*u_perp+vec_cross(q,(1/l)*...
     (vL_dot+g*e3+R*(hat(Omega)*hat(Omega)+hat(Omega_dot))*r));
-
-% %% Update f
-% F_pd = -kq*err_q-kom*err_om;
-% F_ff = (mQ*l)*vec_dot(q, vec_cross(qd,dqd))*vec_cross(q,dq)+...
-%     (mQ*l)*vec_cross( vec_cross(qd, d2qd), q)+(1/l)*hat(q)*hat(q)*(R*(hat(Omega)*hat(Omega)+hat(Omega_dot))*r);
-% F_n = vec_dot(A_para,q)*q;
-% F = F_pd - F_ff + F_n;
-% b3c = F/norm(F);
-% f = vec_dot(F, R(:,3));
-% b1d = e1;
-% b1c = -vec_cross(b3c,vec_cross(b3c,b1d))/norm(vec_cross(b3c,b1d));
-% Rc = [b1c, vec_cross(b3c,b1c),b3c];
-% Rd = Rc;
-% u = vec_dot(f, R(:,3))/(mQ*l);
-% u_para = q*(q'*u);
-% u_perp = -hat(q)*(hat(q)*u);
-% 
-% %% Update Dynamics
-% temp = A\(G*u_para+d+[zeros(3,1);M-vec_cross(Omega, J*Omega)]);
-% xL_dot = vL;
-% vL_dot = temp(1:3) - g*e3;
-% q_dot = dq;
-% R_dot = R*hat_map(Omega);
-% Omega_dot = temp(4:6);
-% omega_dot = -hat(q)*u_perp+vec_cross(q,(1/l)*...
-%     (vL_dot+g*e3+R*(hat(Omega)*hat(Omega)+hat(Omega_dot))*r));
 
 %% Output
 dx = [xL_dot; vL_dot; q_dot; omega_dot; reshape(R_dot, 9,1); Omega_dot];
