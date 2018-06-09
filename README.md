@@ -6,4 +6,7 @@
 
 # Robust Analysis of geometric control into outset dynamical model
 ![Old Control Performance](/ControlPerformanceComparaison/OldModel.png )
+where we observe significant final configuration error, not convergent to zero.
+
 ![Improved Control Performance](/ControlPerformanceComparaison/ImprovedModel.png)
+where the configuration error converges perfectly.
