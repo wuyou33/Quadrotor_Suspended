@@ -4,6 +4,8 @@
 
 - `odefun_control2.m`: Apply previous geometric control on SE(3)xR^2 quadrotor suspended with point mass into the offset dynamical model, where we can observe a final configuration error
 
+- `odefun_control3.m`: Apply improved geometric control on SE(3)xR^2 quadrotor suspended with point mass where there is an offset from the suspension point to the CoM of quadrotor.
+
 # Robust Analysis of geometric control into outset dynamical model
 ![Old Control Performance](/ControlPerformanceComparaison/OldModel.png )
 where we observe significant final configuration error, not convergent to zero.
