@@ -11,11 +11,8 @@ e3 = data.params.e3;
 l = data.params.l;
 r = data.params.r;
 
-%% Desired States
-%---------------%
-
-% Case 1: Testing
-[xLd,vLd,aLd,qd,dqd,d2qd,~,omegad,domegad,Omegad,dOmegad] = get_nom_traj(data.params, get_load_traj(t));
+%% Get Desired States
+[xLd,vLd,aLd,qd,dqd,d2qd,~,omegad,domegad,Omegad,dOmegad] = get_nom_traj(data.params, get_load_traj2(t));
 
 %% Extracting States
 xL = x(1:3);
