@@ -1,5 +1,5 @@
 function load_traj = get_load_traj(t)
-%% Test 1
+%% Global Test
 f1 = 1/4;
 f2 = 1/5;
 f3 = 1/7;
@@ -30,14 +30,5 @@ load_traj.d5xL = (2*pi)^5*[f1^5*a_x*sin(2*pi*f1*t);
 load_traj.d6xL = (2*pi)^6*[f1^6*a_x*cos(2*pi*f1*t);
     f2^6*a_y * -sin(2*pi*f2*t);
     f3^6*a_z * -cos(2*pi*f3*t)];
-
-%% Test 2
-load_traj.xL = [1;0;0];
-load_traj.dxL = [0;0;0];
-load_traj.d2xL = [0;0;0];
-load_traj.d3xL = [0;0;0];
-load_traj.d4xL = [0;0;0];
-load_traj.d5xL = [0;0;0];
-load_traj.d6xL = [0;0;0];
 
 end

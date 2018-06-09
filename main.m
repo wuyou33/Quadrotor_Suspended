@@ -13,9 +13,9 @@ data.params.l = 1;
 data.params.r = [0.05;0.05;-0.05];
 
 %% Get initial condition from the nominal trajectory
-xL = [0.5;-0.5;2.5-0.5];
+xL = [2;2;2];
 vL = zeros(3,1);
-th = 135*pi/180;
+th = 90*pi/180;
 q = [-sin(th);0;cos(th)];
 omega = [0;0;0];
 R = eye(3,3);
@@ -30,14 +30,17 @@ x_0 = [xL; vL; q; omega; reshape(R, 9,1); Omega];
 
 %% Solving Dynamical Equations
 odeopts = odeset('RelTol',1e-2,'AbsTol',1e-2);
-[t, x] = ode45(@odefun_control2, [0 30], x_0, odeopts, data);
+% Don't forget to change the model of control for the part of "Compute
+% various quantities" 
+[t, x] = ode45(@odefun_control3, [0 20], x_0, odeopts, data);
+
 
 %% Compute various quantities
 
 disp('Computing State Variables and Configuration Errors ') ;
 ind = round(linspace(1, length(t), round(0.1*length(t)))) ;
 for j=ind
-    [~, xLd_, Rd, qd_, f_, M_] = odefun_control(t(j), x(j,:)', data) ;
+    [~, xLd_, Rd, qd_, f_, M_] = odefun_control3(t(j), x(j,:)', data) ;
     [phi_d(j),theta_d(j),psi_d(j)] = RotToRPY_ZXY(Rd) ;
     [phi(j),theta(j),psi(j)] = RotToRPY_ZXY(reshape(x(j,13:21),3,3));
     xLd(j,:)=xLd_';
