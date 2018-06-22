@@ -12,7 +12,8 @@ l = data.params.l;
 r = data.params.r;
 
 %% Get Desired States
-[xLd,vLd,aLd,qd,dqd,d2qd,~,omegad,domegad,Omegad,dOmegad] = get_nom_traj(data.params, get_load_traj2(t));
+[xLd,vLd,aLd,qd,dqd,d2qd,~,omegad,domegad,Omegad,dOmegad] = ...
+get_nom_traj(data.params, get_load_traj3(t));
 
 %% Extracting States
 xL = x(1:3);
@@ -31,7 +32,7 @@ b1 = R(:,1);
 err_x = xL - xLd;
 err_v = vL - vLd;
 
-epsilon_bar = 0.4; % 0.8
+epsilon_bar = 0.8; % 0.8
 kp_xy = 0.3/epsilon_bar^2; kd_xy = 0.6/epsilon_bar;
 kx = diag([kp_xy kp_xy 2]); kv = diag([kd_xy kd_xy 1.5]);
 
@@ -67,7 +68,7 @@ if(norm(Rd'*Rd-eye(3)) > 1e-2)
 end
 err_R = 1/2 * vee_map(Rd'*R - R'*Rd);
 err_Om = Omega - R'*Rd*Omegad;
-kR = 4 ; kOm = 4 ;
+kR = 4; kOm = 4;
 epsilon = 0.1 ; %.5 ; %0.01 ;
 kR = 4/epsilon^2; kOm = 4/epsilon;
 

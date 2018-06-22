@@ -3,9 +3,9 @@ function animate_3dquad_load(torig, x, t_pd, xLd)
 %==========================================
 % initialize the animation figure and axes
 %==========================================
-    figure_x_limits = [-5 5];
-    figure_y_limits = [-5 5];
-    figure_z_limits = [-5 5] ;
+    figure_x_limits = [-3 7];
+    figure_y_limits = [-3 4];
+    figure_z_limits = [-2 2] ;
     fig1 = figure;
 
     set(0,'Units','pixels')
@@ -51,7 +51,7 @@ function animate_3dquad_load(torig, x, t_pd, xLd)
     [~, xLd] = even_sample(t_pd, xLd, RATE) ;
     
         L = 1 ; % Cable length
-hist = 250 ;
+hist = 2500;
 MAKE_MOVIE = 1;
 if(MAKE_MOVIE)
     M = moviein(length(t)) ;
@@ -74,13 +74,18 @@ end
         %% Motion SnapShot
         if i ==length(t)
         drawtwo(axes1, x(1,:)');
-        drawtwo(axes1, x(floor(length(t)/8),:)');
-        drawtwo(axes1, x(floor(length(t)/4),:)');
-        drawtwo(axes1, x(floor(length(t)/4*2),:)');
-        drawtwo(axes1, x(floor(length(t)/4*3),:)');
-        drawtwo(axes1, x(floor(length(t)/4),:)');
+        drawtwo(axes1, x(floor(length(t)/32),:)');
+        drawtwo(axes1, x(floor(length(t)/32*2),:)');
+        drawtwo(axes1, x(floor(length(t)/32*3),:)');
+        drawtwo(axes1, x(floor(length(t)/32*4),:)');
+        drawtwo(axes1, x(floor(length(t)/32*5),:)');
+                opts.print.index = 4;
+        % opts.print_pos_sz =[0.25 2.5 10 8.5];
 
-        saveas(fig1,'SnapShot_Motion.png')
+        opts.print.filename = 'Snapshot';
+        opts.print.ext = '-depsc';
+        print_fig(opts,fig1);
+        % saveas(fig1,'SnapShot_Motion.png')
         else
         end
         

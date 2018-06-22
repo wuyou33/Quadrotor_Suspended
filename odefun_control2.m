@@ -15,7 +15,7 @@ r = data.params.r;
 %---------------%
 
 % Case 1: Testing
-[xLd,vLd,aLd,qd,dqd,d2qd,~,Omegad,dOmegad] = get_nom_traj(data.params, get_load_traj2(t));
+[xLd,vLd,aLd,qd,dqd,d2qd,~,Omegad,dOmegad] = get_nom_traj(data.params, get_load_traj3(t));
 
 %% Extracting States
 xL = x(1:3);
@@ -116,7 +116,6 @@ Omega_dot = temp(4:6);
 omega_dot = -hat(q)*u_perp+vec_cross(q,(1/l)*...
     (vL_dot+g*e3+R*(hat(Omega)^2+hat(Omega_dot))*r));
 
-disp(err_x)
 %% Output
 dx = [xL_dot; vL_dot; q_dot; omega_dot; reshape(R_dot, 9,1); Omega_dot];
 

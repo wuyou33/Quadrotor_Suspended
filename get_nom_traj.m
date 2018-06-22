@@ -57,11 +57,11 @@ axQ = aLd - l*d2p;
 daxQ = daLd - l*d3p;
 d2axQ = d2aLd - l*d4p;
 
-b1d = e1 ;
-db1d = zeros(3,1) ;
-d2b1d = zeros(3,1) ;
+b1d = e1;
+db1d = zeros(3,1);
+d2b1d = zeros(3,1);
 
-fb3 = mQ*(axQ+g*e3) - Tp ;
+fb3 = mQ*(axQ+g*e3) - Tp;
 norm_fb3 = norm(fb3);
 f = norm_fb3;
 b3 = fb3 / norm_fb3;
@@ -71,15 +71,15 @@ b1 = - vec_cross(b3, b3_b1d) / norm_b3_b1d;
 b2 = vec_cross(b3, b1);
 R = [b1 b2 b3];
 
-dfb3 = mQ*(daxQ) - dTp ;
-dnorm_fb3 = vec_dot(fb3, dfb3) / norm_fb3 ;
-db3 = (dfb3*norm_fb3 - fb3*dnorm_fb3) / norm_fb3^2 ;
-db3_b1d = vec_cross(db3, b1d) + vec_cross(b3, db1d) ;
-dnorm_b3_b1d = vec_dot(b3_b1d, db3_b1d) / norm_b3_b1d ;
-db1 = (-vec_cross(db3,b3_b1d)-vec_cross(b3,db3_b1d) - b1*dnorm_b3_b1d) / norm_b3_b1d ;
-db2 = vec_cross(db3, b1) + vec_cross(b3, db1) ;
-dR = [db1 db2 db3] ;
-Omega = vee_map(R'*dR) ;
+dfb3 = mQ*(daxQ) - dTp;
+dnorm_fb3 = vec_dot(fb3, dfb3) / norm_fb3;
+db3 = (dfb3*norm_fb3 - fb3*dnorm_fb3) / norm_fb3^2;
+db3_b1d = vec_cross(db3, b1d) + vec_cross(b3, db1d);
+dnorm_b3_b1d = vec_dot(b3_b1d, db3_b1d) / norm_b3_b1d;
+db1 = (-vec_cross(db3,b3_b1d)-vec_cross(b3,db3_b1d) - b1*dnorm_b3_b1d) / norm_b3_b1d;
+db2 = vec_cross(db3, b1) + vec_cross(b3, db1);
+dR = [db1 db2 db3];
+Omega = vee_map(R'*dR);
 
 d2fb3 = mQ*(d2axQ) - d2Tp ;
 d2norm_fb3 = (vec_dot(dfb3, dfb3)+vec_dot(fb3, d2fb3) - dnorm_fb3*dnorm_fb3) / norm_fb3 ;
