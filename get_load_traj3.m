@@ -1,6 +1,6 @@
  function load_traj = get_load_traj3(t)
 %% Circular Displacement  
-f = 0.05;
+f = 0.3;
 a_x = 3;
 a_y = 3;
 a_z = 0;
