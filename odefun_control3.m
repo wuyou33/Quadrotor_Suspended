@@ -1,5 +1,7 @@
 %% Offset Model: slow model control
 function[dx, xLd, Rd, qd, f, M] = odefun_control(t,x,data)
+
+global d2R_;
 %% Constants
 mL = data.params.mL;
 g = data.params.g;
@@ -12,7 +14,7 @@ l = data.params.l;
 r = data.params.r;
 
 %% Get Desired States
-[xLd,vLd,aLd,qd,dqd,d2qd,~,omegad,domegad,Omegad,dOmegad] = ...
+[xLd,vLd,aLd,~,dqd,d2qd,Rd,omegad,domegad,Omegad,dOmegad] = ...
 get_nom_traj(data.params, get_load_traj3(t));
 
 %% Extracting States
@@ -39,33 +41,39 @@ kx = diag([kp_xy kp_xy 2]); kv = diag([kd_xy kd_xy 1.5]);
 %% Quadrotor Coupled Dynamics
 qb = R'*q;
 A11 = (mQ+mL)*eye(3);
-A12 = -mQ*q*qb'*hat(r);
-A21 = mQ*hat(r)*qb*q';
+A12 = mQ*q*qb'*hat(r);
+A21 = -mQ*hat(r)*qb*q';
 A22 = J + mQ*(hat(r)*qb)*(hat(r)*qb)';
 A = [A11,A12;A21,A22];
 
 G1 = mQ*l*(q*q');
-G2 = mQ*l*hat(r)*qb*q';
+G2 = -mQ*l*hat(r)*qb*q';
 G = [G1;G2];
 
-d1 = -mQ*(qb'*(hat(Omega))^2*r + l*vec_dot(omega,omega))*q;
-d2 = -mQ*(qb'*(hat(Omega))^2*r + l*vec_dot(omega,omega))*(hat(r)*qb);
+d1 = mQ*(qb'*(hat(Omega))^2*r - l*vec_dot(omega,omega))*q;
+d2 = -mQ*(qb'*(hat(Omega))^2*r - l*vec_dot(omega,omega))*(hat(r)*qb);
 d = [d1;d2];
+
+err_R = 1/2 * vee_map(Rd'*R - R'*Rd);
+err_Om = Omega - R'*Rd*Omegad;
+kR = 4; kOm = 4;
+epsilon = 0.1 ; %.5 ; %0.01 ;
+kR = 4/epsilon^2; kOm = 4/epsilon;
 
 Wd1 = aLd+g*e3-kx*err_x-kv*err_v;
 Wd2 = 0; %don't concern about the angular acceleration of quadrotor
-%Wd2 = -hat_map(Omega)*R'*Rd*Omegad+R'*Rd*dOmegad-kR*err_R-kOm*err_Om;
+Wd2 = -hat_map(Omega)*R'*Rd*Omegad+R'*Rd*dOmegad-kR*err_R-kOm*err_Om;
 
 %% PD force to track trajectory for Load with Feedforward
-u_para =  vec_dot((A11*Wd1-d1)/norm(G1),q)*q;
-qd = -(A11*Wd1-d1)/norm(A11*Wd1-d1);
+u_para = vec_dot((A11*Wd1+A12*Wd2-d1)/norm(G1),q)*q;
+qd = -(A11*Wd1+A12*Wd2-d1)/norm(A11*Wd1+A12*Wd2-d1);
 
-epsilon_q = 0.5;
+epsilon_q = 0.05;
 kq = -1.5/epsilon_q^2; kom = -0.8/epsilon_q;
 err_q = hat_map(q)^2*qd;
 err_om = dq - vec_cross(vec_cross(qd, dqd), q);
 u_perp = -kq*err_q-kom*err_om - vec_dot(q, vec_cross(qd,dqd))*vec_cross(q,dq) -...
-    vec_cross( vec_cross(qd, d2qd), q)+(1/l)*hat(q)*hat(q)*(R*hat(Omega)*hat(Omega)*r);
+    vec_cross( vec_cross(qd, d2qd), q)+(1/l)*hat(q)*hat(q)*(R*(hat(Omega)*hat(Omega)+dOmegad)*r);
 
 %% Input f
 v = u_para+u_perp;
@@ -96,7 +104,6 @@ Wd2 = -hat_map(Omega)*R'*Rd*Omegad+R'*Rd*dOmegad-kR*err_R-kOm*err_Om;
 M = vec_cross(Omega, J*Omega)+A21*Wd1+A22*Wd2-G2*u_para-d2;
 
 %% Dynamics
-
 temp = A\(G*u_para+d+[zeros(3,1);M-vec_cross(Omega, J*Omega)]);
 xL_dot = vL;
 vL_dot = temp(1:3) - g*e3;
@@ -106,6 +113,7 @@ Omega_dot = temp(4:6);
 omega_dot = -hat(q)*u_perp+vec_cross(q,(1/l)*...
     (vL_dot+g*e3+R*(hat(Omega)*hat(Omega)+hat(Omega_dot))*r));
 
+d2R_ = Rd*hat(Omegad)^2 + Rd*dOmegad;
 %% Output
 dx = [xL_dot; vL_dot; q_dot; omega_dot; reshape(R_dot, 9,1); Omega_dot];
 

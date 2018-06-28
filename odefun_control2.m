@@ -15,7 +15,7 @@ r = data.params.r;
 %---------------%
 
 % Case 1: Testing
-[xLd,vLd,aLd,qd,dqd,d2qd,~,Omegad,dOmegad] = get_nom_traj(data.params, get_load_traj3(t));
+[xLd,vLd,aLd,~,dqd,d2qd,~,Omegad,dOmegad] = get_nom_traj(data.params, get_load_traj3(t));
 
 %% Extracting States
 xL = x(1:3);
@@ -43,7 +43,7 @@ k1 = diag([kp_xy kp_xy 2]); k2 = diag([kd_xy kd_xy 1.5]);
 A = (-k1*err_x - k2*err_v + (mQ+mL)*(aLd+g*e3) + mQ*l*vec_dot(dq,dq)*q);
 qd = -A/norm(A);
 
-epsilon_q = 0.5;
+epsilon_q = 0.05;
 kp = -1.5/epsilon_q^2; kom = -0.8/epsilon_q;
 err_q = hat_map(q)^2*qd;
 err_om = dq - vec_cross(vec_cross(qd, dqd), q);
@@ -97,17 +97,17 @@ u_perp = -hat(q)*(hat(q)*u);
 
 qb = R'*q;
 A11 = (mQ+mL)*eye(3);
-A12 = -mQ*q*qb'*hat(r);
-A21 = mQ*hat(r)*qb*q';
+A12 = mQ*q*qb'*hat(r);
+A21 = -mQ*hat(r)*qb*q';
 A22 = J + mQ*(hat(r)*qb)*(hat(r)*qb)';
 A = [A11,A12;A21,A22];
 
 G1 = mQ*l*(q*q');
-G2 = mQ*l*hat(r)*qb*q';
+G2 = -mQ*l*hat(r)*qb*q';
 G = [G1;G2];
 
-d1 = -mQ*(qb'*(hat(Omega))^2*r + l*vec_dot(omega,omega))*q;
-d2 = -mQ*(qb'*(hat(Omega))^2*r + l*vec_dot(omega,omega))*(hat(r)*qb);
+d1 = mQ*(qb'*(hat(Omega))^2*r - l*vec_dot(omega,omega))*q;
+d2 = -mQ*(qb'*(hat(Omega))^2*r - l*vec_dot(omega,omega))*(hat(r)*qb);
 d = [d1;d2];
 
 temp = A\(G*u_para+d+[zeros(3,1);M-vec_cross(Omega, J*Omega)]);
