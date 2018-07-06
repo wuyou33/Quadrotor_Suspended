@@ -43,7 +43,7 @@ k1 = diag([kp_xy kp_xy 2]); k2 = diag([kd_xy kd_xy 1.5]);
 A = (-k1*err_x - k2*err_v + (mQ+mL)*(aLd+g*e3) + mQ*l*vec_dot(dq,dq)*q);
 qd = -A/norm(A);
 
-epsilon_q = 0.05;
+epsilon_q = 0.5;
 kp = -1.5/epsilon_q^2; kom = -0.8/epsilon_q;
 err_q = hat_map(q)^2*qd;
 err_om = dq - vec_cross(vec_cross(qd, dqd), q);
@@ -118,7 +118,6 @@ omega_dot = -hat(q)*u_perp+vec_cross(q,(1/l)*...
 
 %% Output
 dx = [xL_dot; vL_dot; q_dot; omega_dot; reshape(R_dot, 9,1); Omega_dot];
-
 if nargout <= 1
    fprintf('Simulation time %0.4f seconds \n',t);
 end

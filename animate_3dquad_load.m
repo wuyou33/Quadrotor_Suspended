@@ -3,9 +3,9 @@ function animate_3dquad_load(torig, x, t_pd, xLd)
 %==========================================
 % initialize the animation figure and axes
 %==========================================
-    figure_x_limits = [-3 7];
-    figure_y_limits = [-3 4];
-    figure_z_limits = [-2 2] ;
+    figure_x_limits = [-4 8];
+    figure_y_limits = [-9 5];
+    figure_z_limits = [-2 3] ;
     fig1 = figure;
 
     set(0,'Units','pixels')

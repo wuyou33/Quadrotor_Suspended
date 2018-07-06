@@ -55,7 +55,7 @@ domega = vec_cross(dp,dp)+vec_cross(p,d2p);
 
 %% Derivatives of Quadrotor's Position
 vxQ = vLd - l*dp;
-axQ = aLd - l*d2p + d2R_*r;
+axQ = aLd - l*d2p - d2R_*r;
 daxQ = daLd - l*d3p;
 d2axQ = d2aLd - l*d4p;
 
