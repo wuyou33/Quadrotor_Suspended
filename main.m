@@ -36,7 +36,7 @@ x_0 = [xL; vL; q; omega; reshape(R, 9,1); Omega];
 odeopts = odeset('RelTol',1e-6,'AbsTol',1e-6);
 % Don't forget to change the model of control for the part of "Compute
 % various quantities" 
-[t, x] = ode45(@odefun_control3, [0 30], x_0, odeopts, data);
+[t, x] = ode45(@odefun_control2, [0 30], x_0, odeopts, data);
 
 
 %% Compute various quantities
@@ -44,7 +44,7 @@ odeopts = odeset('RelTol',1e-6,'AbsTol',1e-6);
 disp('Computing State Variables and Configuration Errors ') ;
 ind = round(linspace(1, length(t), round(0.1*length(t)))) ;
 for j=ind
-    [~, xLd_, Rd, qd_, f_, M_] = odefun_control3(t(j), x(j,:)', data) ;
+    [~, xLd_, Rd, qd_, f_, M_] = odefun_control2(t(j), x(j,:)', data) ;
     [phi_d(j),theta_d(j),psi_d(j)] = RotToRPY_ZXY(Rd) ;
     [phi(j),theta(j),psi(j)] = RotToRPY_ZXY(reshape(x(j,13:21),3,3));
     xLd(j,:)=xLd_';

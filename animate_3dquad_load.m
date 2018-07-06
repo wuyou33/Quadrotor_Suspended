@@ -1,145 +1,153 @@
 function animate_3dquad_load(torig, x, t_pd, xLd)
-    RATE = 25 * 1;
+RATE = 25 * 1;
 %==========================================
 % initialize the animation figure and axes
 %==========================================
-    figure_x_limits = [-4 8];
-    figure_y_limits = [-9 5];
-    figure_z_limits = [-2 3] ;
-    fig1 = figure;
+figure_x_limits = [-4 8];
+figure_y_limits = [-9 5];
+figure_z_limits = [-2 3] ;
+fig1 = figure;
 
-    set(0,'Units','pixels')
-    scnsize = get(0,'ScreenSize');
+set(0,'Units','pixels')
+scnsize = get(0,'ScreenSize');
 
-    screen_width = scnsize(3);
-    screen_height = scnsize(4);
+screen_width = scnsize(3);
+screen_height = scnsize(4);
 
-    % find the minimum scaling factor
-    figure_x_size = figure_x_limits(2) - figure_x_limits(1);
-    figure_y_size = figure_y_limits(2) - figure_y_limits(1);
+% find the minimum scaling factor
+figure_x_size = figure_x_limits(2) - figure_x_limits(1);
+figure_y_size = figure_y_limits(2) - figure_y_limits(1);
 
-    xfactor = screen_width/figure_x_size;
-    yfactor = screen_height/figure_y_size;
+xfactor = screen_width/figure_x_size;
+yfactor = screen_height/figure_y_size;
 
-    if (xfactor < yfactor)
-      screen_factor = 0.5*xfactor;
-    else
-      screen_factor = 0.5*yfactor;
-    end
+if (xfactor < yfactor)
+    screen_factor = 0.5*xfactor;
+else
+    screen_factor = 0.5*yfactor;
+end
 
-    % calculate screen offsets
-    screen_x_offset = (screen_width - screen_factor*figure_x_size)/2;
-    screen_y_offset = (screen_height - screen_factor*figure_y_size)/2;
+% calculate screen offsets
+screen_x_offset = (screen_width - screen_factor*figure_x_size)/2;
+screen_y_offset = (screen_height - screen_factor*figure_y_size)/2;
 
-    % draw figure and axes
-    set(fig1,'Position', [screen_x_offset screen_y_offset screen_factor*figure_x_size screen_factor*figure_y_size]);
-    set(fig1,'MenuBar', 'none');
-    axes1 = axes;
-    set(axes1,'XLim',figure_x_limits,'YLim',figure_y_limits);
+% draw figure and axes
+set(fig1,'Position', [screen_x_offset screen_y_offset screen_factor*figure_x_size screen_factor*figure_y_size]);
+set(fig1,'MenuBar', 'none');
+axes1 = axes;
+set(axes1,'XLim',figure_x_limits,'YLim',figure_y_limits);
 %     set(axes1,'Position',[0 0 1 1]);
 %     set(axes1,'Color','w');
-    %set(axes1,'TickDir','out');
-    axis equal ;
-    
-    box on;
-
-    xorig = x ;
-    xLdorig = xLd ;
-    [t, x] = even_sample(torig, x, RATE);
-    t = t+torig(1) ;
-    
-    [~, xLd] = even_sample(t_pd, xLd, RATE) ;
-    
-        L = 1 ; % Cable length
+%set(axes1,'TickDir','out');
+axis equal ;
+box on;
+xorig = x ;
+xLdorig = xLd ;
+[t, x] = even_sample(torig, x, RATE);
+t = t+torig(1) ;
+[~, xLd] = even_sample(t_pd, xLd, RATE) ;
+L = 1 ; % Cable length
+%% Define plotting length
 hist = 2500;
 MAKE_MOVIE = 1;
 if(MAKE_MOVIE)
     M = moviein(length(t)) ;
 end
+% shading color settings
+colorBlue1 = [127/255 233/255 1];
+colorBlue2 = [0 0 1];
+colorRed1 = [1 154/255 154/255];
+colorRed2 = [1 0 0];
+
 % aviobj = avifile('sample2.avi','compression','None');
-    for i=1:length(t)
-        %set(axes1,'XLim',figure_x_limits+pH(i,1)) ;
-        drawone(axes1, x(i,:)');
-        plot3(x(max(1,i-hist):i, 1), x(max(1,i-hist):i, 2), x(max(1,i-hist):i, 3), 'b') ;
-        plot3(xLd(max(1,i-hist):i, 1), xLd(max(1,i-hist):i, 2), xLd(max(1,i-hist):i, 3), 'r') ;
-%         plot3(xorig(:, 1), xorig(:, 2), xorig(:, 3), 'b') ;
-%         plot3(xLdorig(:, 1), xLdorig(:, 2), xLdorig(:, 3), 'r') ;
-%         s = sprintf('Running\n t = %1.2fs \n 1/%d realtime speed',t(i), RATE/25);
-%         text(-1.3,2.4,s,'FontAngle','italic','FontWeight','bold');
-        drawnow;
-        set(axes1,'XLim',figure_x_limits,'YLim',figure_y_limits,'ZLim',figure_z_limits);
-        if MAKE_MOVIE, M(:,i) = getframe; end
-%         aviobj = addframe(aviobj, fig1);
-        
-        %% Motion SnapShot
-        if i ==length(t)
+for i=1:length(t)
+    %set(axes1,'XLim',figure_x_limits+pH(i,1)) ;
+    drawone(axes1, x(i,:)');
+    %% No shading plotting
+%     plot3(x(max(1,i-hist):i, 1), x(max(1,i-hist):i, 2), x(max(1,i-hist):i, 3), 'b');
+%     plot3(xLd(max(1,i-hist):i, 1), xLd(max(1,i-hist):i, 2), xLd(max(1,i-hist):i, 3), 'r');
+
+    %% Shading plotting
+    plot3_surf(x(max(1,i-hist):i, 1), x(max(1,i-hist):i, 2), x(max(1,i-hist):i, 3), colorBlue1, colorBlue2, 2, '-');
+    plot3_surf(xLd(max(1,i-hist):i, 1), xLd(max(1,i-hist):i, 2), xLd(max(1,i-hist):i, 3), colorRed1, colorRed2, 2, '-');
+    %         plot3(xorig(:, 1), xorig(:, 2), xorig(:, 3), 'b') ;
+    %         plot3(xLdorig(:, 1), xLdorig(:, 2), xLdorig(:, 3), 'r') ;
+    %         s = sprintf('Running\n t = %1.2fs \n 1/%d realtime speed',t(i), RATE/25);
+    %         text(-1.3,2.4,s,'FontAngle','italic','FontWeight','bold');
+    drawnow;
+    set(axes1,'XLim',figure_x_limits,'YLim',figure_y_limits,'ZLim',figure_z_limits);
+    if MAKE_MOVIE, M(:,i) = getframe; end
+    %         aviobj = addframe(aviobj, fig1);
+    
+    %% Motion SnapShot
+    if i ==length(t)
         drawtwo(axes1, x(1,:)');
         drawtwo(axes1, x(floor(length(t)/32),:)');
         drawtwo(axes1, x(floor(length(t)/32*2),:)');
         drawtwo(axes1, x(floor(length(t)/32*3),:)');
         drawtwo(axes1, x(floor(length(t)/32*4),:)');
         drawtwo(axes1, x(floor(length(t)/32*5),:)');
-                opts.print.index = 4;
+        opts.print.index = 4;
         % opts.print_pos_sz =[0.25 2.5 10 8.5];
-
+        
         opts.print.filename = 'Snapshot';
         opts.print.ext = '-depsc';
         print_fig(opts,fig1);
         % saveas(fig1,'SnapShot_Motion.png')
-        else
-        end
-        
+    else
     end
+    
+end
 %     aviobj = close(aviobj);
 
 % v = VideoWriter('newfile.avi','Uncompressed AVI');
 % writeVideo(v,M);
 
 % if(MAKE_MOVIE)
-% %     for i = 1:length(M) 
-% %     if (i==1) 
-% %     [r1,c1,s] = size(M(i).cdata); 
-% %     rk = r1; 
-% %     ck = c1; 
-% %     else 
-% %     [rk,ck,s] = size(M(i).cdata); 
-% %     end 
-% %     r1 = min(r1,rk); 
-% %     c1 = min(c1,ck); 
+% %     for i = 1:length(M)
+% %     if (i==1)
+% %     [r1,c1,s] = size(M(i).cdata);
+% %     rk = r1;
+% %     ck = c1;
+% %     else
+% %     [rk,ck,s] = size(M(i).cdata);
 % %     end
-% % 
-% %     for i = 1:length(M) 
-% %     [rk,ck] = size(M(i).cdata); 
-% %         if ((rk~= r1) || (ck ~=c1)) 
-% %         M(i).cdata = M(i).cdata(1:r1, 1:c1,:); 
-% %         end 
-% %     end 
+% %     r1 = min(r1,rk);
+% %     c1 = min(c1,ck);
+% %     end
+% %
+% %     for i = 1:length(M)
+% %     [rk,ck] = size(M(i).cdata);
+% %         if ((rk~= r1) || (ck ~=c1))
+% %         M(i).cdata = M(i).cdata(1:r1, 1:c1,:);
+% %         end
+% %     end
 % %     mpgwrite(M,jet,'movie.mpg', [1 0 0 1 10 8 10 25]);
 %     mpgwrite(M,jet,'movie.mpg', [1 0 0 1 4 1 1 1]);
 % end
 end
 
 function drawone(parent, x)
-    tem = get(parent,'Children');
-    delete(tem);
-    
-    s.L = 0.175; %length of quadrotor boom
-    s.R = 0.1; %radius of propeller prop
-    
-    L = 1 ; % Cable length
-    
-    % Extract state x
-    xL = x(1:3) ;
+tem = get(parent,'Children');
+delete(tem);
+
+s.L = 0.175; %length of quadrotor boom
+s.R = 0.1; %radius of propeller prop
+
+L = 1 ; % Cable length
+
+% Extract state x
+xL = x(1:3) ;
 %     vL = x(4:6) ;
-    p = x(7:9) ;
+p = x(7:9) ;
 %     omega = x(10:12) ;
-    R = reshape(x(13:21), 3,3) ;
+R = reshape(x(13:21), 3,3) ;
 %     Omega = x(22:24) ;
-    xQ = xL - L*p ;
-    
+xQ = xL - L*p ;
+
 %     plot3(xQ(1), xQ(2), xQ(3), 'r.') ;
 
-    BRW = R' ;
+BRW = R' ;
 
 point1 = BRW'*[s.L,0,0]';
 point2 = BRW'*[0,s.L,0]';
@@ -195,23 +203,23 @@ zlabel('Z')
 
 
 
-    
+
 %     L_quad = 0.15 ;
 %     L_blade = 0.07 ;
 %     L_axis = 0.05 ;
-%     
+%
 %     delta_p = L_quad*[cos(psi) ; sin(psi)] ;
 %     p1 = [x ; y] - delta_p ;
 %     p2 = [x ; y] + delta_p ;
 %     plot([p1(1)  p2(1)], [p1(2) p2(2)], 'k', 'LineWidth', 2) ;
 %     hold on ;
-%     
+%
 %     delta_a = L_axis*[cos(pi/2+psi) ; sin(pi/2+psi)] ;
 %     a1 = p1 + delta_a ;
 %     a2 = p2 + delta_a ;
 %     plot([p1(1)  a1(1)], [p1(2) a1(2)], 'k', 'LineWidth', 2) ;
 %     plot([p2(1)  a2(1)], [p2(2) a2(2)], 'k', 'LineWidth', 2) ;
-%     
+%
 %     delta_b = L_blade*[cos(psi) ; sin(psi)] ;
 %     b11 = a1 - delta_b ;
 %     b12 = a1 + delta_b ;
@@ -219,13 +227,13 @@ zlabel('Z')
 %     b22 = a2 + delta_b ;
 %     plot([b11(1)  b12(1)], [b11(2) b12(2)], 'k', 'LineWidth', 2) ;
 %     plot([b21(1)  b22(1)], [b21(2) b22(2)], 'k', 'LineWidth', 2) ;
-%     
-%     
+%
+%
 %     % Plot load
 %     L = 1 ;
 %     plot([x xL], [y yL], 'k', 'LineWidth', 1) ;
 %     plot(xL, yL, 'ko') ;
-%     
+%
 %     % Plot Obstacles
 %     for j=1:length(Obstacles_Lines)
 %         L = Obstacles_Lines{j} ;
@@ -308,23 +316,23 @@ zlabel('Z')
 
 
 
-    
+
 %     L_quad = 0.15 ;
 %     L_blade = 0.07 ;
 %     L_axis = 0.05 ;
-%     
+%
 %     delta_p = L_quad*[cos(psi) ; sin(psi)] ;
 %     p1 = [x ; y] - delta_p ;
 %     p2 = [x ; y] + delta_p ;
 %     plot([p1(1)  p2(1)], [p1(2) p2(2)], 'k', 'LineWidth', 2) ;
 %     hold on ;
-%     
+%
 %     delta_a = L_axis*[cos(pi/2+psi) ; sin(pi/2+psi)] ;
 %     a1 = p1 + delta_a ;
 %     a2 = p2 + delta_a ;
 %     plot([p1(1)  a1(1)], [p1(2) a1(2)], 'k', 'LineWidth', 2) ;
 %     plot([p2(1)  a2(1)], [p2(2) a2(2)], 'k', 'LineWidth', 2) ;
-%     
+%
 %     delta_b = L_blade*[cos(psi) ; sin(psi)] ;
 %     b11 = a1 - delta_b ;
 %     b12 = a1 + delta_b ;
@@ -332,13 +340,13 @@ zlabel('Z')
 %     b22 = a2 + delta_b ;
 %     plot([b11(1)  b12(1)], [b11(2) b12(2)], 'k', 'LineWidth', 2) ;
 %     plot([b21(1)  b22(1)], [b21(2) b22(2)], 'k', 'LineWidth', 2) ;
-%     
-%     
+%
+%
 %     % Plot load
 %     L = 1 ;
 %     plot([x xL], [y yL], 'k', 'LineWidth', 1) ;
 %     plot(xL, yL, 'ko') ;
-%     
+%
 %     % Plot Obstacles
 %     for j=1:length(Obstacles_Lines)
 %         L = Obstacles_Lines{j} ;
